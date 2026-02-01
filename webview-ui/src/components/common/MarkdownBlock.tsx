@@ -201,9 +201,17 @@ const StyledMarkdown = styled.div`
 	tr:hover {
 		background-color: var(--vscode-list-hoverBackground);
 	}
+
+	/* Task list checkbox styling */
+	input[type="checkbox"] {
+		margin-right: 0.5em;
+		accent-color: var(--vscode-checkbox-background, var(--vscode-inputOption-activeBackground));
+	}
 `
 
 const MarkdownBlock = memo(({ markdown }: MarkdownBlockProps) => {
+	// Preprocess markdown to convert [x] and [ ] to proper task list format - [x] and - [ ]
+	const processedMarkdown = markdown?.replace(/^\[([ x])\]/gm, "- [$1]") || ""
 	const components = useMemo(
 		() => ({
 			table: ({ children, ...props }: any) => {
@@ -323,7 +331,7 @@ const MarkdownBlock = memo(({ markdown }: MarkdownBlockProps) => {
 				]}
 				rehypePlugins={[rehypeKatex as any]}
 				components={components}>
-				{markdown || ""}
+				{processedMarkdown}
 			</ReactMarkdown>
 		</StyledMarkdown>
 	)
